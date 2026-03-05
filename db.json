@@ -181,13 +181,13 @@
       "category": "Kỹ năng sống"
     },
     {
-      "id": "4d27",
-      "title": "Dac Nhan",
+      "title": "Dac Nhan Tam",
       "author": "Le Toan Ban",
       "description": "mô tả",
-      "price": 11111,
-      "category": "Thể Loại",
-      "image": "../images/DacNhanTam.jpg"
+      "price": 100000,
+      "category": "Truyện",
+      "image": "../images/z7582585899369_876fc783dca76192a858c6e87fd8282f.jpg",
+      "id": "4d27"
     }
   ]
 }
