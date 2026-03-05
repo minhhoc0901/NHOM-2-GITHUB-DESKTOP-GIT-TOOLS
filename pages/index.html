@@ -211,6 +211,85 @@
     </div>
 
 
+      <!-- EDIT BOOK MODAL -->
+        <div class="modal fade" id="editBookModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title text-warning">
+                            <i class="fa fa-edit"></i> Sửa Thông Tin Sách
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <form id="editBookForm" onsubmit="UpdateBookFromIndex(event)">
+
+                            <div class="mb-3">
+                                <label class="form-label">ID Sách</label>
+                                <input type="text" class="form-control" id="editBookId" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Tiêu đề</label>
+                                <input type="text" class="form-control" id="editTitle" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Tác giả</label>
+                                <input type="text" class="form-control" id="editAuthor" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Mô tả</label>
+                                <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Giá</label>
+                                    <input type="number" class="form-control" id="editPrice" required>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Thể loại</label>
+                                    <input type="text" class="form-control" id="editCategory" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Hình ảnh hiện tại</label>
+                                <div class="mb-2">
+                                    <img id="editImagePreview" src="" alt="Preview" style="max-width: 100%; max-height: 200px; border-radius: 5px; display: none;">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Thay đổi hình ảnh</label>
+                                <input type="file" class="form-control" id="editImage" accept="image/*">
+                                <small class="text-muted">Để trống nếu không thay đổi ảnh</small>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Hủy
+                        </button>
+                        <button type="submit" class="btn btn-warning" form="editBookForm">
+                            <i class="fa fa-save"></i> Cập nhật
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -248,6 +327,8 @@
                     
                     // Attach delete event listeners
                     attachDeleteHandlers();
+                    // Attach edit event listeners
+                    attachEditHandlers();
                 }
             } catch (error) {
                 console.error('Error loading books:', error);
@@ -296,9 +377,10 @@
                                         <i class="fas fa-eye"></i> Xem chi tiết
                                     </a>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-warning" title="Chỉnh sửa">
-                                            <i class="fas fa-edit"></i> Sửa
-                                        </button>
+                                            <button type="button" class="btn btn-warning btn-edit" 
+                                                    data-id="${book.id}" title="Chỉnh sửa" data-bs-toggle="modal" data-bs-target="#editBookModal">
+                                                <i class="fas fa-edit"></i> Sửa
+                                            </button>
                                         <button type="button" class="btn btn-danger btn-delete" 
                                                 data-id="${book.id}" data-title="${book.title}" title="Xóa sách">
                                             <i class="fas fa-trash-alt"></i> Xóa
@@ -375,7 +457,108 @@
         }
 
         // Add book button handlers
-        
+        // Attach edit button handlers
+        function attachEditHandlers() {
+            const editButtons = document.querySelectorAll('.btn-edit');
+            editButtons.forEach(btn => {
+                btn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    const bookId = this.dataset.id;
+                    
+                    try {
+                        // Fetch book data
+                        const response = await fetch(`${API_URL}/books/${bookId}`);
+                        if (!response.ok) {
+                            throw new Error('Không thể tải dữ liệu sách');
+                        }
+                        
+                        const book = await response.json();
+                        
+                        // Populate form with book data
+                        document.getElementById('editBookId').value = book.id;
+                        document.getElementById('editTitle').value = book.title;
+                        document.getElementById('editAuthor').value = book.author;
+                        document.getElementById('editDescription').value = book.description;
+                        document.getElementById('editPrice').value = book.price;
+                        document.getElementById('editCategory').value = book.category;
+                        
+                        // Show current image preview
+                        if (book.image) {
+                            const preview = document.getElementById('editImagePreview');
+                            preview.src = book.image;
+                            preview.style.display = 'block';
+                        }
+                        
+                        // Clear file input for new image
+                        document.getElementById('editImage').value = '';
+                    } catch (error) {
+                        console.error('Error loading book:', error);
+                        showNotification('Không thể tải thông tin sách', 'danger');
+                    }
+                });
+            });
+        }
+
+         // Update book from index.html modal
+            async function UpdateBookFromIndex(event) {
+                event.preventDefault();
+                const bookId = document.getElementById('editBookId').value;
+                const imageInput = document.getElementById('editImage');
+                
+                const updatedBook = {
+                    title: document.getElementById('editTitle').value,
+                    author: document.getElementById('editAuthor').value,
+                    description: document.getElementById('editDescription').value,
+                    price: Number(document.getElementById('editPrice').value),
+                    category: document.getElementById('editCategory').value
+                };
+
+                // Handle image upload if a new file is selected
+                if (imageInput.files.length > 0) {
+                    updatedBook.image = `../images/${imageInput.files[0].name}`;
+                }
+
+                try {
+                    const response = await fetch(`${API_URL}/books/${bookId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedBook)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Cập nhật thất bại');
+                    }
+
+                    showNotification('Cập nhật sách thành công!', 'success');
+                    
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editBookModal'));
+                    modal.hide();
+
+                    // Reload books
+                    loadBooks();
+                } catch (error) {
+                    console.error('Error updating book:', error);
+                    showNotification('Không thể cập nhật sách', 'danger');
+                }
+            }
+
+            // Preview image before upload
+            document.getElementById('editImage').addEventListener('change', function (e) {
+                const preview = document.getElementById('editImagePreview');
+                const file = e.target.files[0];
+                
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        preview.src = event.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
         
     </script>
 </body>

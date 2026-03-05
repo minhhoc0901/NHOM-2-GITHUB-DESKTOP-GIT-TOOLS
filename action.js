@@ -86,3 +86,91 @@ async function AddBook(event) {
         console.error(err);
     }
 }
+// ================= UPDATE BOOK (SỬA) =================
+/**
+ * Cập nhật thông tin sách
+ * @param {number|string} id - ID của sách cần cập nhật
+ * @param {Object} bookData - Dữ liệu sách cần cập nhật
+ * @returns {Promise<Object>} Kết quả cập nhật
+ */
+async function updateBook(id, bookData) {
+    try {
+        const res = await fetch(`${API_URL}/books/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(bookData)
+        });
+
+        if (!res.ok) throw new Error("Cập nhật thất bại");
+        return await res.json();
+    } catch (error) {
+        console.error("Error updating book:", error);
+        throw error;
+    }
+}
+
+/**
+ * Upload hình ảnh cho sách
+ * Lưu tên file vào database với path folder
+ * @param {File} imageFile - File hình ảnh
+ * @returns {Promise<string>} Tên file đã upload
+ */
+async function uploadBookImage(imageFile) {
+    if (!imageFile) return null;
+    
+    try {
+        // Tạo path hình ảnh: ../images/filename
+        const fileName = imageFile.name;
+        const imagePath = `../images/${fileName}`;
+        
+        console.log("Hình ảnh được lưu:", imagePath);
+        return imagePath;
+    } catch (error) {
+        console.error("Error uploading image:", error);
+        throw error;
+    }
+}
+
+/**
+ * Cập nhật sách từ form modal
+ * Hỗ trợ upload hình ảnh mới
+ * @param {Event} event - Form submit event
+ * @param {number|string} bookId - ID của sách cần cập nhật
+ */
+async function UpdateBookWithImage(event, bookId) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const imageInput = form.image || document.getElementById('editImage');
+    
+    // Chuẩn bị dữ liệu cập nhật
+    const updatedBook = {
+        title: form.title?.value || document.getElementById('editTitle')?.value,
+        author: form.author?.value || document.getElementById('editAuthor')?.value,
+        description: form.description?.value || document.getElementById('editDescription')?.value,
+        price: Number(form.price?.value || document.getElementById('editPrice')?.value),
+        category: form.category?.value || document.getElementById('editCategory')?.value,
+    };
+
+    try {
+        // Upload hình ảnh mới nếu có
+        if (imageInput && imageInput.files.length > 0) {
+            const imageName = await uploadBookImage(imageInput.files[0]);
+            if (imageName) {
+                updatedBook.image = imageName;
+            }
+        }
+
+        // Cập nhật thông tin sách
+        await updateBook(bookId, updatedBook);
+        console.log("Sách đã được cập nhật thành công!");
+        return true;
+    } catch (error) {
+        console.error("Error updating book:", error);
+        throw error;
+    }
+}
+
+// Edit functionality is now handled in index.html with modal
