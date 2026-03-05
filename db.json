@@ -188,6 +188,15 @@
       "price": 11111,
       "category": "Thể Loại",
       "image": "../images/DacNhanTam.jpg"
+    },
+    {
+      "id": "1ee4",
+      "title": "Dăc nhan tam 2",
+      "author": "lê toàn bân",
+      "description": "mô tả",
+      "price": 10000,
+      "category": "thể loại",
+      "image": "../images/DacNhanTam.jpg"
     }
   ]
 }

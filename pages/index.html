@@ -144,17 +144,18 @@
     </div>
 
 
-     <!-- ADD BOOK MODAL -->
+    
+    <!-- ADD BOOK MODAL -->
     <div class="modal fade" id="addBookModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content shadow">
 
                 <!-- Modal Header -->
-                <div class="modal-header">
-                    <h5 class="modal-title text-primary">
-                        <i class="fa fa-book"></i> Thêm Sách Mới
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fa fa-book me-2"></i> Thêm Sách Mới
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
                 <!-- Modal Body -->
@@ -162,34 +163,34 @@
                     <form id="addBookForm" onsubmit="AddBook(event)">
 
                         <div class="mb-3">
-                            <label class="form-label">Tiêu đề</label>
-                            <input type="text" class="form-control" name="title" required>
+                            <label class="form-label fw-semibold">Tiêu đề</label>
+                            <input type="text" class="form-control" name="title" placeholder="Nhập tiêu đề sách" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Tác giả</label>
-                            <input type="text" class="form-control" name="author" required>
+                            <label class="form-label fw-semibold">Tác giả</label>
+                            <input type="text" class="form-control" name="author" placeholder="Tên tác giả" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Mô tả</label>
-                            <textarea class="form-control" name="description" rows="3"></textarea>
+                            <label class="form-label fw-semibold">Mô tả</label>
+                            <textarea class="form-control" name="description" rows="3" placeholder="Mô tả về cuốn sách"></textarea>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Giá</label>
-                                <input type="number" class="form-control" name="price" required>
+                                <label class="form-label fw-semibold">Giá</label>
+                                <input type="number" class="form-control" name="price" placeholder="VNĐ" required>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Thể loại</label>
-                                <input type="text" class="form-control" name="category" required>
+                                <label class="form-label fw-semibold">Thể loại</label>
+                                <input type="text" class="form-control" name="category" placeholder="Ví dụ: Novel, IT..." required>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Hình ảnh</label>
+                            <label class="form-label fw-semibold">Hình ảnh</label>
                             <input type="file" class="form-control" name="image">
                         </div>
 
@@ -198,11 +199,11 @@
 
                 <!-- Modal Footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                         Đóng
                     </button>
-                    <button type="submit" class="btn btn-success" form="addBookForm">
-                        <i class="fa fa-save"></i> Lưu
+                    <button type="submit" class="btn btn-success px-4" form="addBookForm">
+                        <i class="fa fa-save me-1"></i> Lưu Sách
                     </button>
                 </div>
 
