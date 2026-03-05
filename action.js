@@ -38,3 +38,51 @@ async function deleteBook(id) {
         throw error;
     }
 }
+
+
+
+async function AddBook(event) {
+    event.preventDefault();
+    const form = document.getElementById("addBookForm");
+    const book = {
+        title: form.title.value,
+        author: form.author.value,
+        description: form.description.value,
+        price: Number(form.price.value),
+        category: form.category.value,
+        image: "",
+    };
+
+    if (form.image.files.length > 0) {
+        book.image = `../images/${form.image.files[0].name}`;
+    }
+
+    try {
+        const res = await fetch(`${API_URL}/books`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(book),
+        });
+
+        if (!res.ok) {
+            throw new Error("Thêm sách thất bại");
+        }
+
+        const data = await res.json();
+        console.log("Book mới:", data);
+
+        alert("Thêm sách thành công!");
+        form.reset();
+
+        // Ẩn modal
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById("addBookModal"),
+        );
+        modal.hide();
+    } catch (err) {
+        alert("Có lỗi xảy ra");
+        console.error(err);
+    }
+}
