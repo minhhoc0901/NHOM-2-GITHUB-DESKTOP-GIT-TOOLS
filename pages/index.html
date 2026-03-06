@@ -5,20 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản Lý Sách - Thư Viện Hiện Đại</title>
-    
+
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles.css">
 </head>
@@ -30,8 +30,8 @@
             <a class="navbar-brand" href="index.html">
                 <i class="fas fa-book-reader"></i> Thư Viện Sách
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -57,13 +57,19 @@
     </nav>
 
     <div class="container mt-4 mb-5">
-         <div class="page-header">
+        <div class="page-header">
             <h1>
                 <i class="fas fa-book-open"></i> Danh Sách Sách
             </h1>
-            <button class="btn btn-success btn-add-book"
-                    data-bs-toggle="modal"
-                    data-bs-target="#addBookModal">
+            <select id="categoryFilter" class="form-select w-auto d-inline-block" onchange="sortByCategory()">
+                <option value="">-- Tất cả danh mục --</option>
+            </select>
+            <select id="priceSort" class="form-select form-select-sm w-auto" onchange="sortByCategory()">
+                <option value="">-- Sắp xếp giá --</option>
+                <option value="asc">Giá tăng dần</option>
+                <option value="desc">Giá giảm dần</option>
+            </select>
+            <button class="btn btn-success btn-add-book" data-bs-toggle="modal" data-bs-target="#addBookModal">
                 <i class="fas fa-plus"></i> Thêm sách mới
             </button>
 
@@ -144,7 +150,7 @@
     </div>
 
 
-     <!-- ADD BOOK MODAL -->
+    <!-- ADD BOOK MODAL -->
     <div class="modal fade" id="addBookModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -211,84 +217,85 @@
     </div>
 
 
-      <!-- EDIT BOOK MODAL -->
-        <div class="modal fade" id="editBookModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
+    <!-- EDIT BOOK MODAL -->
+    <div class="modal fade" id="editBookModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
 
-                    <!-- Modal Header -->
-                    <div class="modal-header">
-                        <h5 class="modal-title text-warning">
-                            <i class="fa fa-edit"></i> Sửa Thông Tin Sách
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <!-- Modal Body -->
-                    <div class="modal-body">
-                        <form id="editBookForm" onsubmit="UpdateBookFromIndex(event)">
-
-                            <div class="mb-3">
-                                <label class="form-label">ID Sách</label>
-                                <input type="text" class="form-control" id="editBookId" readonly>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Tiêu đề</label>
-                                <input type="text" class="form-control" id="editTitle" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Tác giả</label>
-                                <input type="text" class="form-control" id="editAuthor" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Mô tả</label>
-                                <textarea class="form-control" id="editDescription" rows="3"></textarea>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Giá</label>
-                                    <input type="number" class="form-control" id="editPrice" required>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Thể loại</label>
-                                    <input type="text" class="form-control" id="editCategory" required>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Hình ảnh hiện tại</label>
-                                <div class="mb-2">
-                                    <img id="editImagePreview" src="" alt="Preview" style="max-width: 100%; max-height: 200px; border-radius: 5px; display: none;">
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Thay đổi hình ảnh</label>
-                                <input type="file" class="form-control" id="editImage" accept="image/*">
-                                <small class="text-muted">Để trống nếu không thay đổi ảnh</small>
-                            </div>
-
-                        </form>
-                    </div>
-
-                    <!-- Modal Footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Hủy
-                        </button>
-                        <button type="submit" class="btn btn-warning" form="editBookForm">
-                            <i class="fa fa-save"></i> Cập nhật
-                        </button>
-                    </div>
-
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title text-warning">
+                        <i class="fa fa-edit"></i> Sửa Thông Tin Sách
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form id="editBookForm" onsubmit="UpdateBookFromIndex(event)">
+
+                        <div class="mb-3">
+                            <label class="form-label">ID Sách</label>
+                            <input type="text" class="form-control" id="editBookId" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tiêu đề</label>
+                            <input type="text" class="form-control" id="editTitle" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tác giả</label>
+                            <input type="text" class="form-control" id="editAuthor" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="editDescription" rows="3"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Giá</label>
+                                <input type="number" class="form-control" id="editPrice" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Thể loại</label>
+                                <input type="text" class="form-control" id="editCategory" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Hình ảnh hiện tại</label>
+                            <div class="mb-2">
+                                <img id="editImagePreview" src="" alt="Preview"
+                                    style="max-width: 100%; max-height: 200px; border-radius: 5px; display: none;">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Thay đổi hình ảnh</label>
+                            <input type="file" class="form-control" id="editImage" accept="image/*">
+                            <small class="text-muted">Để trống nếu không thay đổi ảnh</small>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-warning" form="editBookForm">
+                        <i class="fa fa-save"></i> Cập nhật
+                    </button>
+                </div>
+
             </div>
         </div>
+    </div>
 
 
     <!-- Bootstrap 5 JS Bundle -->
@@ -297,7 +304,7 @@
     <script src="../action.js"></script>
     <script>
         // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadBooks();
         });
 
@@ -324,7 +331,7 @@
                         const bookCard = createBookCard(book);
                         booksList.innerHTML += bookCard;
                     });
-                    
+
                     // Attach delete event listeners
                     attachDeleteHandlers();
                     // Attach edit event listeners
@@ -403,7 +410,7 @@
         function attachDeleteHandlers() {
             const deleteButtons = document.querySelectorAll('.btn-delete');
             deleteButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     bookIdToDelete = this.dataset.id;
                     document.getElementById('bookTitleToDelete').textContent = this.dataset.title;
                     deleteModal.show();
@@ -412,7 +419,7 @@
         }
 
         // Confirm delete handler
-        document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async function () {
             if (!bookIdToDelete) return;
 
             try {
@@ -420,9 +427,9 @@
                 this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
 
                 await deleteBook(bookIdToDelete);
-                
+
                 deleteModal.hide();
-                
+
                 // Show success message
                 showNotification('Xóa sách thành công!', 'success');
 
@@ -442,7 +449,7 @@
         function showNotification(message, type = 'success') {
             const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
             const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-            
+
             const notification = document.createElement('div');
             notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
             notification.style.zIndex = '9999';
@@ -461,19 +468,19 @@
         function attachEditHandlers() {
             const editButtons = document.querySelectorAll('.btn-edit');
             editButtons.forEach(btn => {
-                btn.addEventListener('click', async function(e) {
+                btn.addEventListener('click', async function (e) {
                     e.preventDefault();
                     const bookId = this.dataset.id;
-                    
+
                     try {
                         // Fetch book data
                         const response = await fetch(`${API_URL}/books/${bookId}`);
                         if (!response.ok) {
                             throw new Error('Không thể tải dữ liệu sách');
                         }
-                        
+
                         const book = await response.json();
-                        
+
                         // Populate form with book data
                         document.getElementById('editBookId').value = book.id;
                         document.getElementById('editTitle').value = book.title;
@@ -481,14 +488,14 @@
                         document.getElementById('editDescription').value = book.description;
                         document.getElementById('editPrice').value = book.price;
                         document.getElementById('editCategory').value = book.category;
-                        
+
                         // Show current image preview
                         if (book.image) {
                             const preview = document.getElementById('editImagePreview');
                             preview.src = book.image;
                             preview.style.display = 'block';
                         }
-                        
+
                         // Clear file input for new image
                         document.getElementById('editImage').value = '';
                     } catch (error) {
@@ -499,67 +506,67 @@
             });
         }
 
-         // Update book from index.html modal
-            async function UpdateBookFromIndex(event) {
-                event.preventDefault();
-                const bookId = document.getElementById('editBookId').value;
-                const imageInput = document.getElementById('editImage');
-                
-                const updatedBook = {
-                    title: document.getElementById('editTitle').value,
-                    author: document.getElementById('editAuthor').value,
-                    description: document.getElementById('editDescription').value,
-                    price: Number(document.getElementById('editPrice').value),
-                    category: document.getElementById('editCategory').value
-                };
+        // Update book from index.html modal
+        async function UpdateBookFromIndex(event) {
+            event.preventDefault();
+            const bookId = document.getElementById('editBookId').value;
+            const imageInput = document.getElementById('editImage');
 
-                // Handle image upload if a new file is selected
-                if (imageInput.files.length > 0) {
-                    updatedBook.image = `../images/${imageInput.files[0].name}`;
-                }
+            const updatedBook = {
+                title: document.getElementById('editTitle').value,
+                author: document.getElementById('editAuthor').value,
+                description: document.getElementById('editDescription').value,
+                price: Number(document.getElementById('editPrice').value),
+                category: document.getElementById('editCategory').value
+            };
 
-                try {
-                    const response = await fetch(`${API_URL}/books/${bookId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(updatedBook)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Cập nhật thất bại');
-                    }
-
-                    showNotification('Cập nhật sách thành công!', 'success');
-                    
-                    // Close modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('editBookModal'));
-                    modal.hide();
-
-                    // Reload books
-                    loadBooks();
-                } catch (error) {
-                    console.error('Error updating book:', error);
-                    showNotification('Không thể cập nhật sách', 'danger');
-                }
+            // Handle image upload if a new file is selected
+            if (imageInput.files.length > 0) {
+                updatedBook.image = `../images/${imageInput.files[0].name}`;
             }
 
-            // Preview image before upload
-            document.getElementById('editImage').addEventListener('change', function (e) {
-                const preview = document.getElementById('editImagePreview');
-                const file = e.target.files[0];
-                
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        preview.src = event.target.result;
-                        preview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
+            try {
+                const response = await fetch(`${API_URL}/books/${bookId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedBook)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Cập nhật thất bại');
                 }
-            });
-        
+
+                showNotification('Cập nhật sách thành công!', 'success');
+
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editBookModal'));
+                modal.hide();
+
+                // Reload books
+                loadBooks();
+            } catch (error) {
+                console.error('Error updating book:', error);
+                showNotification('Không thể cập nhật sách', 'danger');
+            }
+        }
+
+        // Preview image before upload
+        document.getElementById('editImage').addEventListener('change', function (e) {
+            const preview = document.getElementById('editImagePreview');
+            const file = e.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
     </script>
 </body>
 
