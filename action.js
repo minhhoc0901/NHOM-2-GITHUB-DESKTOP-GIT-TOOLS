@@ -336,3 +336,22 @@ async function SearchBook(event) {
             '<div class="alert alert-danger">Có lỗi xảy ra khi tìm kiếm</div>';
     }
 }
+
+/**
+ * Lấy thông tin chi tiết một cuốn sách theo ID
+ * @param {number|string} id - ID của sách cần lấy
+ * @returns {Promise<Object>} Thông tin chi tiết sách
+ */
+async function getBookById(id) {
+    try {
+        const response = await fetch(`${API_URL}/books/${id}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const book = await response.json();
+        return book;
+    } catch (error) {
+        console.error('Error fetching book:', error);
+        throw error;
+    }
+}
