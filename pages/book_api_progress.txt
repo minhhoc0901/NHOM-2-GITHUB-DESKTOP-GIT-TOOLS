@@ -5,3 +5,7 @@ Module: Book Management
 Planned APIs:
 1. List book
 2. Delete book
+List Book API
+- Method: GET
+- Endpoint: /api/books
+- Description: return all books
