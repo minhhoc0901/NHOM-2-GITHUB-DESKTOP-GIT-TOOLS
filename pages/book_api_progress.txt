@@ -9,3 +9,12 @@ List Book API
 - Method: GET
 - Endpoint: /api/books
 - Description: return all books
+- Response:
+  + id
+  + title
+  + author
+  + price
+Delete Book API
+- Method: DELETE
+- Endpoint: /api/books/{id}
+- Description: delete a book by id
