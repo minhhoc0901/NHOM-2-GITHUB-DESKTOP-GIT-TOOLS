@@ -174,3 +174,106 @@ async function UpdateBookWithImage(event, bookId) {
 }
 
 // Edit functionality is now handled in index.html with modal
+
+
+// Sắp xếp sách theo danh mục
+async function sortByCategory() {
+    const category = document.getElementById("categoryFilter").value;
+    const priceSort = document.getElementById("priceSort").value;
+    const booksList = document.getElementById("booksList");
+
+    try {
+        const books = await getAllBooks();
+
+        let filteredBooks = books;
+
+        // ✅ Lọc theo category
+        if (category !== "") {
+            const selected = category.trim().toLowerCase();
+            filteredBooks = filteredBooks.filter((book) => {
+                if (!book.category) return false;
+                return book.category.trim().toLowerCase() === selected;
+            });
+        }
+
+        // ✅ Sắp xếp theo giá
+        if (priceSort === "asc") {
+            filteredBooks.sort((a, b) => a.price - b.price);
+        } 
+        else if (priceSort === "desc") {
+            filteredBooks.sort((a, b) => b.price - a.price);
+        }
+
+        booksList.innerHTML = "";
+
+        if (filteredBooks.length === 0) {
+            booksList.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        Không có sách phù hợp
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        filteredBooks.forEach(book => {
+            booksList.innerHTML += createBookCard(book);
+        });
+
+        attachDeleteHandlers();
+
+    } catch (error) {
+        console.error("Lỗi khi sắp xếp:", error);
+    }
+}
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadCategories();
+
+  // Hiển thị tất cả sách ban đầu
+  const books = await getAllBooks();
+  const resultDiv = document.getElementById("categoryResult");
+  renderBooks(books, resultDiv);
+});
+
+function renderBooks(data, container) {
+  container.innerHTML = "";
+
+  if (data.length === 0) {
+    container.innerHTML =
+      '<div class="alert alert-warning">Không có sách</div>';
+    return;
+  }
+
+  const row = document.createElement("div");
+  row.className = "row g-4";
+
+  data.forEach((book) => {
+    const col = document.createElement("div");
+    col.className = "col-12 col-sm-6 col-md-4 col-lg-3";
+
+    col.innerHTML = `
+      <div class="card book-card h-100">
+        <img src="${book.image}" class="card-img-top"
+             style="height:300px;object-fit:cover;"
+             onerror="this.src='https://via.placeholder.com/300x400'">
+        <div class="card-body d-flex flex-column">
+          <h5>${book.title}</h5>
+          <p class="text-muted">Tác giả: ${book.author}</p>
+          <p class="text-primary fw-bold">
+            ${new Intl.NumberFormat("vi-VN", {
+              style: "currency",
+              currency: "VND"
+            }).format(book.price)}
+          </p>
+        </div>
+      </div>
+    `;
+
+    row.appendChild(col);
+  });
+
+  container.appendChild(row);
+}
