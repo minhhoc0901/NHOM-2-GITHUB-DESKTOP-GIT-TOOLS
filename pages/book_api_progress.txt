@@ -1,0 +1,7 @@
+BOOK API PROGRESS
+
+Module: Book Management
+
+Planned APIs:
+1. List book
+2. Delete book
